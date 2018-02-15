@@ -5,7 +5,7 @@ import './App.css';
 //NEW IMPORTS 
 // To make this component work we need to 'connect' it with our top level redux store
 import { connect } from 'react-redux'
-import { updateName, addPerson } from './reducer'
+import { updateName, addPerson, updateExcitementLevel } from './ActionCreaters.js'
 
 class App extends Component {
   render() {
@@ -21,6 +21,8 @@ class App extends Component {
     return (
       <div className="App">
         <p>
+          <h1>Mark is this excited: {this.props.markExcitementLevel}</h1>
+          <button onClick={() => {this.props.updateExcitementLevel()}}>Find mark a cool tropical house to buy</button>
           <h4>{name}</h4>
           <input type="text" ref="name"/>
           <button onClick={()=> this.props.updateName(this.refs.name.value)}>Update</button>    
@@ -43,12 +45,12 @@ class App extends Component {
   }
 }
 
-//Input function to get data from state
-function moveFromStoreToProps(state) {
+// Input function to get data from state
+function mapStateToProps(state) {
   //state refers to the redux state
   if(!state) return {};
 
-  let {people, name} = state;
+  let {people, name, markExcitementLevel} = state;
 
   // return { //This object gets mashed/merged into this.props
   //   people,
@@ -56,21 +58,31 @@ function moveFromStoreToProps(state) {
   // }
   return { //This object gets mashed/merged into this.props
     people: people,
-    name: name
+    name: name,
+    markExcitementLevel: markExcitementLevel
   }
 }
+
+// function mapStateToProps(state) {
+//   return {
+//     people: state.people,
+//     name: state.people,
+//     markExcitementLevel: state.markExcitementLevel
+//   }
+// }
 
 //Output object with all of the actions that this component will update our store about
 
 // We need to import any actions we want to send through the process
 // We importeded these up above with this line of code :
 // import {updateAge, addPerson} from './reducer'
-let outputActions = {
+let mapDispatchToProps = {
   updateName: updateName,
-  addPerson: addPerson
+  addPerson: addPerson,
+  updateExcitementLevel: updateExcitementLevel
 }
 
-let reduxInsAndOuts = connect(moveFromStoreToProps, outputActions)
+let reduxInsAndOuts = connect(mapStateToProps, mapDispatchToProps)
 export default reduxInsAndOuts(App);
 //This is often done in a single line of code like this:
 //connect(mapStateToProps, outputActions)(App)
